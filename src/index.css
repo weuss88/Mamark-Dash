@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-vision-bg: #020512;
+  --color-vision-card: rgba(6, 11, 38, 0.85);
+  --color-vision-blue: #0075FF;
+  --color-vision-cyan: #01F3FF;
+  --color-vision-purple: #825EE4;
+  --color-vision-text-muted: #8B96A5;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-vision-bg text-white antialiased;
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(0, 117, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(130, 94, 228, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+.glass-card {
+  @apply bg-vision-card backdrop-blur-xl border border-white/10 shadow-2xl rounded-[20px];
+}
+
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-vision-text-muted hover:text-white;
+}
+
+.sidebar-item.active {
+  @apply bg-vision-card text-white shadow-lg border border-white/5;
+}
+
+.sidebar-icon-box {
+  @apply w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200;
+}
+
+.sidebar-item.active .sidebar-icon-box {
+  @apply bg-vision-blue shadow-[0_0_15px_rgba(0,117,255,0.5)];
+}
+
+.stat-icon-box {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shadow-lg;
+}
+
+.chart-container {
+  @apply w-full h-full min-h-[200px];
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-white/5;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full hover:bg-white/30 border-2 border-transparent bg-clip-padding;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20;
+}
