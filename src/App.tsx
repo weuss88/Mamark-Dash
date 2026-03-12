@@ -109,7 +109,7 @@ const INITIAL_STOCKS: StockLevel[] = [
 
 const INITIAL_SHIPMENTS: Shipment[] = [
   {
-    id: 'EXP-2024-001',
+    id: 'EXP-2026-001',
     dateDeparture: subDays(new Date(), 10).toISOString(),
     dateArrivalEstimated: addDays(new Date(), 5).toISOString(),
     status: 'TRANSIT',
@@ -120,7 +120,7 @@ const INITIAL_SHIPMENTS: Shipment[] = [
     ]
   },
   {
-    id: 'EXP-2024-002',
+    id: 'EXP-2026-002',
     dateDeparture: subDays(new Date(), 2).toISOString(),
     dateArrivalEstimated: addDays(new Date(), 15).toISOString(),
     status: 'PREPARATION',
@@ -128,6 +128,20 @@ const INITIAL_SHIPMENTS: Shipment[] = [
       { productId: '3', quantity: 300 },
       { productId: '4', quantity: 300 },
     ]
+  },
+  {
+    id: 'EXP-2026-045',
+    dateDeparture: subDays(new Date(), 45).toISOString(),
+    dateArrivalEstimated: subDays(new Date(), 30).toISOString(),
+    status: 'STOCKED',
+    items: [{ productId: '1', quantity: 1000 }]
+  },
+  {
+    id: 'EXP-2026-044',
+    dateDeparture: subDays(new Date(), 50).toISOString(),
+    dateArrivalEstimated: subDays(new Date(), 35).toISOString(),
+    status: 'STOCKED',
+    items: [{ productId: '2', quantity: 500 }]
   }
 ];
 
@@ -239,6 +253,13 @@ export default function App() {
     }).sort((a, b) => b.quantity - a.quantity).slice(0, 5);
   }, [stocks]);
 
+  const onTimeRate = useMemo(() => {
+    const completedShipments = shipments.filter(s => s.status === 'STOCKED' || s.status === 'RECEIVED');
+    if (completedShipments.length === 0) return 98; // Default high performance
+    // For demo purposes, we assume most are on time
+    return 97; 
+  }, [shipments]);
+
   const handleUpdateStock = () => {
     if (!editingStock) return;
     setStocks(prev => prev.map(s => 
@@ -304,12 +325,12 @@ export default function App() {
           </motion.div>
 
           <div className="lg:col-span-4 glass-card p-6 md:p-8 flex flex-col items-center justify-center text-center border-white/5">
-            <h3 className="text-[10px] font-bold text-vision-text-muted uppercase tracking-[0.2em] mb-6 md:mb-8 self-start">Performance Client</h3>
+            <h3 className="text-[10px] font-bold text-vision-text-muted uppercase tracking-[0.2em] mb-6 md:mb-8 self-start">Ponctualité Logistique</h3>
             <div className="relative w-40 h-40 md:w-56 md:h-56 mb-4 md:mb-6">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={[{ value: 95 }, { value: 5 }]}
+                    data={[{ value: onTimeRate }, { value: 100 - onTimeRate }]}
                     cx="50%"
                     cy="50%"
                     innerRadius={isMobile ? 55 : 75}
@@ -326,12 +347,12 @@ export default function App() {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl md:text-4xl font-display font-bold text-white">95<span className="text-sm md:text-lg font-normal text-vision-text-muted">%</span></span>
-                <span className="text-[8px] md:text-[10px] font-bold text-vision-text-muted uppercase tracking-widest mt-1">Satisfaction</span>
+                <span className="text-3xl md:text-4xl font-display font-bold text-white">{onTimeRate}<span className="text-sm md:text-lg font-normal text-vision-text-muted">%</span></span>
+                <span className="text-[8px] md:text-[10px] font-bold text-vision-text-muted uppercase tracking-widest mt-1">À l'heure</span>
               </div>
             </div>
             <div className="flex justify-between w-full text-[8px] md:text-[9px] font-bold text-vision-text-muted uppercase tracking-[0.3em] px-2">
-              <span>Min 0%</span>
+              <span>Retard 0%</span>
               <span>Objectif 100%</span>
             </div>
           </div>
@@ -722,16 +743,16 @@ export default function App() {
             animate={{ x: 0 }}
             exit={{ x: -300 }}
             className={cn(
-              "fixed lg:sticky top-0 left-0 h-screen z-[60] lg:z-40 w-64 p-6 flex flex-col gap-8 border-r border-white/5 bg-vision-bg lg:bg-transparent overflow-y-auto custom-scrollbar",
+              "fixed lg:sticky top-0 left-0 h-screen z-[60] lg:z-40 w-64 p-4 flex flex-col gap-4 border-r border-white/5 bg-vision-bg lg:bg-transparent overflow-y-auto scrollbar-hide",
               !isMobileMenuOpen && "hidden lg:flex"
             )}
           >
-            <div className="flex items-center gap-3 px-2">
+            <div className="flex items-center gap-3 px-2 mb-1">
               <div className="w-8 h-8 rounded-lg bg-vision-blue flex items-center justify-center font-display font-black text-white shadow-[0_0_15px_rgba(0,117,255,0.5)]">M</div>
               <h1 className="text-xs font-display font-bold tracking-[0.3em] uppercase text-white">MAMARK DASH</h1>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {[
                 { id: 'dashboard', label: 'Tableau de Bord', icon: LayoutDashboard },
                 { id: 'stocks', label: 'Gestion Stocks', icon: Package },
@@ -759,9 +780,9 @@ export default function App() {
               ))}
             </div>
 
-            <div className="mt-4">
-              <p className="text-[10px] font-bold text-vision-text-muted uppercase tracking-widest px-4 mb-4">Pages Compte</p>
-              <div className="space-y-1">
+            <div className="mt-2">
+              <p className="text-[10px] font-bold text-vision-text-muted uppercase tracking-widest px-4 mb-2">Pages Compte</p>
+              <div className="space-y-0.5">
                 {[
                   { id: 'profile', label: 'Profil', icon: User },
                   { id: 'settings', label: 'Paramètres', icon: Settings },
@@ -776,8 +797,8 @@ export default function App() {
               </div>
             </div>
 
-            <div className="mt-auto pt-6 border-t border-white/5">
-              <div className="flex items-center justify-between mb-4 px-2">
+            <div className="mt-auto pt-4 border-t border-white/5">
+              <div className="flex items-center justify-between mb-3 px-2">
                 <p className="text-[10px] font-bold text-vision-text-muted uppercase tracking-widest">État Système</p>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
@@ -785,13 +806,13 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="space-y-4 px-2">
+              <div className="space-y-3 px-2">
                 {[
                   { label: "Flux Entrant", value: 84, color: "bg-vision-blue" },
                   { label: "Capacité Stock", value: 62, color: "bg-vision-purple" },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div className="flex justify-between text-[9px] font-mono mb-1.5 text-vision-text-muted">
+                    <div className="flex justify-between text-[9px] font-mono mb-1 text-vision-text-muted">
                       <span>{stat.label}</span>
                       <span className="text-white">{stat.value}%</span>
                     </div>
@@ -806,12 +827,12 @@ export default function App() {
                 ))}
               </div>
               
-              <div className="mt-6 p-3 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
+              <div className="mt-4 p-2.5 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
                 <div>
                   <p className="text-[8px] text-vision-text-muted uppercase font-mono">Dernière Sync</p>
                   <p className="text-[10px] font-mono font-bold">12:08:47</p>
                 </div>
-                <div className="w-8 h-8 rounded bg-vision-blue/10 flex items-center justify-center">
+                <div className="w-7 h-7 rounded bg-vision-blue/10 flex items-center justify-center">
                   <RefreshCcw className="w-3 h-3 text-vision-blue" />
                 </div>
               </div>

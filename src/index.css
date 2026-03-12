@@ -29,7 +29,7 @@
 }
 
 .sidebar-item {
-  @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-vision-text-muted hover:text-white;
+  @apply flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-200 text-vision-text-muted hover:text-white;
 }
 
 .sidebar-item.active {
@@ -84,4 +84,13 @@
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
   @apply bg-white/10 rounded-full hover:bg-white/20;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
